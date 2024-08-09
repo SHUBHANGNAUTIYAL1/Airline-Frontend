@@ -28,7 +28,7 @@ const Login = () => {
       const response = await axios.post('http://localhost:8100/api/auth/login', formData);
       localStorage.setItem('user',JSON.stringify(response.data))
       console.log(response)
-      if(response.data.role="airline")
+      if(response.data.role=="airline")
       navigate('/flight')
       else
       navigate("/home")

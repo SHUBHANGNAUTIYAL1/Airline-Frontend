@@ -1,9 +1,11 @@
 import React from 'react';
 import { FaHome, FaClipboard, FaBookmark, FaUser, FaCog, FaSignOutAlt } from 'react-icons/fa';
 import { GiAirplaneDeparture } from 'react-icons/gi'; // Add this import for the airplane icon
+import { useNavigate } from 'react-router-dom';
 
 // Example usage
 const SideNavbar = () => {
+  const navigate=useNavigate();
   return (
     <div className="flex h-screen bg-gray-100">
       <nav className="w-64 bg-white shadow-lg p-5">
@@ -32,7 +34,7 @@ const SideNavbar = () => {
             <FaCog className="text-gray-700 text-xl" />
             <span className="text-gray-700">Settings</span>
           </li>
-          <li className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md">
+          <li onClick={()=>navigate('/')} className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md">
             <FaSignOutAlt className="text-gray-700 text-xl" />
             <span className="text-gray-700">Logout</span>
           </li>

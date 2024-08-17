@@ -4,6 +4,7 @@ import Login from './Pages/Login'
 import Register from './Pages/Register'
 import FlightsList from './Pages/FlightList'
 import Flights from './Pages/Flights'
+import Allflights from './Components/Allflights'
 
 
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/register" element={<Register/>}/>
         <Route path="/flight" element={<FlightsList/>}/>
         <Route path="/home" element={<Flights/>}/>
+        <Route path="/flight-listing" element={<Allflights/>} />
      
 
       </Routes>

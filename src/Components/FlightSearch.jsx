@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const FlightSearch = () => {
   const [tripType, setTripType] = useState("one-way");
@@ -8,23 +9,36 @@ const FlightSearch = () => {
   const [returnDate, setReturnDate] = useState("");
   const [travellers, setTravellers] = useState(1);
   const [travelClass, setTravelClass] = useState("Economy");
+  const [flights, setFlights] = useState([]);
 
-  const handleSearch = () => {
-    console.log({
-      tripType,
-      from,
-      to,
-      departureDate,
-      returnDate,
-      travellers,
-      travelClass,
-    });
-    alert("Search clicked! Check console for details.");
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get("http://localhost:8100/api/flight/");
+      const allFlights = response.data;
+
+      console.log(response.data)
+
+      const filteredFlights = allFlights.filter((flight) => {
+        // Trim and compare the from, to, and classType values
+        const matchesFrom = flight.from && flight.from.trim().toLowerCase() === from.trim().toLowerCase();
+        const matchesTo = flight.to && flight.to.trim().toLowerCase() === to.trim().toLowerCase();
+        const matchesClass = flight.classType && flight.classType.trim().toLowerCase() === travelClass.trim().toLowerCase();
+  
+        console.log(matchesFrom, matchesTo, matchesClass);
+        return matchesFrom && matchesTo && matchesClass;
+      });
+
+      setFlights(filteredFlights);
+      console.log("Filtered Flights:", filteredFlights);
+    } catch (error) {
+      console.error("Error fetching flights:", error);
+    }
   };
 
   return (
     <div className="w-full ">
       <div className="w-full mx-auto bg-white p-6 rounded-lg shadow-md">
+        {/* Trip Type Selection */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-6">
             <button
@@ -51,6 +65,7 @@ const FlightSearch = () => {
           </div>
         </div>
 
+        {/* Form Fields */}
         <div className="grid grid-cols-4 gap-4 items-center">
           <div>
             <label className="block text-gray-500 font-semibold mb-1">FROM</label>
@@ -95,6 +110,7 @@ const FlightSearch = () => {
           )}
         </div>
 
+        {/* Travellers & Class */}
         <div className="grid grid-cols-2 gap-4 mt-4 items-center">
           <div>
             <label className="block text-gray-500 font-semibold mb-1">TRAVELLER & CLASS</label>
@@ -133,12 +149,57 @@ const FlightSearch = () => {
           </div>
         </div>
 
+        {/* Extra Options */}
         <div className="flex justify-center space-x-6 mt-4">
           <button className="text-blue-500 font-semibold">Defence Forces</button>
           <button className="text-blue-500 font-semibold">Students</button>
           <button className="text-blue-500 font-semibold">Senior Citizens</button>
           <button className="text-blue-500 font-semibold">Doctors Nurses</button>
         </div>
+
+        {/* Displaying Flights */}
+        {flights.length > 0 && (
+  <div className="mt-4">
+    <h2 className="text-gray-500 font-semibold mb-4">Available Flights</h2>
+    <div className="space-y-4">
+      {flights.map((flight, index) => (
+        <div key={index} className="bg-white w-full rounded-lg shadow-md p-4 flex overflow-hidden">
+          {/* Image Section */}
+          <div className="w-1/4 flex items-center">
+            <img src={flight.image} alt={flight.airline} className="h-[120px] w-[180px] rounded-lg object-cover" />
+          </div>
+
+          {/* Flight Details Section */}
+          <div className="w-3/4 pl-6 flex flex-col justify-between">
+            <div className="flex justify-between items-center">
+              <div className="flex gap-2 items-center">
+                <h3 className="text-lg font-semibold">{flight.airline}</h3>
+                <p className="text-sm text-gray-500">{flight.flightNumber}</p>
+              </div>
+              <div className="text-right">
+                <h4 className="text-lg font-semibold text-red-500">₹{flight.price}</h4>
+                <p className="text-xs text-gray-500">Seats Available: {flight.availableSeats}</p>
+              </div>
+            </div>
+
+            <div className="mt-2">
+              <p className="text-sm font-semibold">{flight.from} - {flight.to}</p>
+              <p className="text-xs mt-1">{flight.departureTime} - {flight.arrivalTime}</p>
+              <p className="text-xs text-gray-500 mt-1">{flight.classType}</p>
+            </div>
+
+            <div className="mt-0 flex justify-end">
+              <button className="bg-orange-500 text-white px-4 py-1 rounded-lg shadow-md">
+                BOOK NOW
+              </button>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
       </div>
     </div>
   );

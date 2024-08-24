@@ -5,6 +5,7 @@ import Register from './Pages/Register'
 import FlightsList from './Pages/FlightList'
 import Flights from './Pages/Flights'
 import Allflights from './Components/Allflights'
+import HotelsPage from './Pages/HotelPage'
 
 
 
@@ -18,6 +19,7 @@ function App() {
         <Route path="/flight" element={<FlightsList/>}/>
         <Route path="/home" element={<Flights/>}/>
         <Route path="/flight-listing" element={<Allflights/>} />
+        <Route path="/hotels" element={<HotelsPage/>} />
      
 
       </Routes>

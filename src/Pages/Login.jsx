@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import flightpic from "../assets/flight.jpg"
 
 import { useNavigate } from 'react-router-dom';
 
@@ -43,7 +44,7 @@ const Login = () => {
     <div
       className="min-h-screen w-full flex items-center justify-center animation-backgroundAnimation relative"
       style={{ backgroundSize: 'cover',
-         backgroundImage: 'url("https://wallpapercave.com/wp/wp9004260.jpg")'
+         backgroundImage: `url(${flightpic})`
        }}
     >
       

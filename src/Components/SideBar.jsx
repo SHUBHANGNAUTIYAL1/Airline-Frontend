@@ -1,8 +1,11 @@
 import React from "react";
 import { FaPlane, FaHotel, FaClipboardList, FaRegUserCircle, FaInfoCircle, FaHeadset } from "react-icons/fa";
 import { GiAirplaneDeparture } from 'react-icons/gi';
+import { Link, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+
+  const navigate=useNavigate()
   return (
     <div className="w-64 h-screen bg-white shadow-lg flex flex-col">
       <div className="text-2xl font-bold py-4 mb-10 text-center flex border-b gap-2 items-center justify-center space-x-2">
@@ -15,10 +18,14 @@ const Sidebar = () => {
             <FaPlane />
             <span>Flights</span>
           </li>
-          <li className="flex items-center space-x-3 text-gray-600 border-b pb-2 hover:text-blue-500 hover:border-blue-500 transition duration-300">
+           
+          <li onClick={()=>navigate('/hotels')} className="flex items-center space-x-3 text-gray-600 border-b pb-2 hover:text-blue-500 hover:border-blue-500 transition duration-300">
+          
             <FaHotel />
             <span>Hotels</span>
-          </li>
+            </li>
+          
+          
           <li className="flex items-center space-x-3 text-gray-600 border-b pb-2 hover:text-blue-500 hover:border-blue-500 transition duration-300">
             <FaClipboardList />
             <span>Your Bookings</span>

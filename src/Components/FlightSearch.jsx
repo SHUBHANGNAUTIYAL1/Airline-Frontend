@@ -10,33 +10,65 @@ const FlightSearch = () => {
   const [travellers, setTravellers] = useState(1);
   const [travelClass, setTravelClass] = useState("Economy");
   const [flights, setFlights] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFlight, setSelectedFlight] = useState(null);
+  const [bookingDate, setBookingDate] = useState("");
+  const [bookingTravellers, setBookingTravellers] = useState(1);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSearch = async () => {
     try {
       const response = await axios.get("http://localhost:8100/api/flight/");
       const allFlights = response.data;
 
-      console.log(response.data)
-
       const filteredFlights = allFlights.filter((flight) => {
-        // Trim and compare the from, to, and classType values
-        const matchesFrom = flight.from && flight.from.trim().toLowerCase() === from.trim().toLowerCase();
-        const matchesTo = flight.to && flight.to.trim().toLowerCase() === to.trim().toLowerCase();
-        const matchesClass = flight.classType && flight.classType.trim().toLowerCase() === travelClass.trim().toLowerCase();
-  
-        console.log(matchesFrom, matchesTo, matchesClass);
+        const matchesFrom = flight.from?.trim().toLowerCase() === from.trim().toLowerCase();
+        const matchesTo = flight.to?.trim().toLowerCase() === to.trim().toLowerCase();
+        const matchesClass = flight.classType?.trim().toLowerCase() === travelClass.trim().toLowerCase();
+
         return matchesFrom && matchesTo && matchesClass;
       });
 
-      setFlights(filteredFlights);
-      console.log("Filtered Flights:", filteredFlights);
+      if (filteredFlights.length > 0) {
+        setFlights(filteredFlights);
+        setErrorMessage("");
+      } else {
+        setFlights([]);
+        setErrorMessage("No flights found matching your criteria.");
+      }
     } catch (error) {
       console.error("Error fetching flights:", error);
+      setErrorMessage("An error occurred while searching for flights. Please try again later.");
     }
   };
 
+  const handleBookNow = (flight) => {
+    setSelectedFlight(flight);
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedFlight(null);
+    setBookingDate("");
+    setBookingTravellers(1);
+  };
+
+  const handleBooking = () => {
+    console.log("Booking Details:", {
+      from: selectedFlight.from,
+      to: selectedFlight.to,
+      airline: selectedFlight.airline,
+      flightName: selectedFlight.flightNumber,
+      time: `${selectedFlight.departureTime} - ${selectedFlight.arrivalTime}`,
+      bookingDate,
+      bookingTravellers,
+    });
+    handleModalClose();
+  };
+
   return (
-    <div className="w-full ">
+    <div className="w-full">
       <div className="w-full mx-auto bg-white p-6 rounded-lg shadow-md">
         {/* Trip Type Selection */}
         <div className="flex justify-between items-center mb-4">
@@ -159,48 +191,128 @@ const FlightSearch = () => {
 
         {/* Displaying Flights */}
         {flights.length > 0 && (
-  <div className="mt-4">
-    <h2 className="text-gray-500 font-semibold mb-4">Available Flights</h2>
-    <div className="space-y-4">
-      {flights.map((flight, index) => (
-        <div key={index} className="bg-white w-full rounded-lg shadow-md p-4 flex overflow-hidden">
-          {/* Image Section */}
-          <div className="w-1/4 flex items-center">
-            <img src={flight.image} alt={flight.airline} className="h-[120px] w-[180px] rounded-lg object-cover" />
+          <div className="mt-4">
+            <h2 className="text-gray-500 font-semibold mb-4">Available Flights</h2>
+            <div className="space-y-4">
+              {flights.map((flight, index) => (
+                <div key={index} className="bg-white w-full rounded-lg shadow-md p-4 flex overflow-hidden">
+                  {/* Image Section */}
+                  <div className="w-1/4 flex items-center">
+                    <img src={flight.image} alt={flight.airline} className="h-[120px] w-[180px] rounded-lg object-cover" />
+                  </div>
+
+                  {/* Flight Details Section */}
+                  <div className="w-3/4 pl-6 flex flex-col justify-between">
+                    <div className="flex justify-between items-center">
+                      <div className="flex gap-2 items-center">
+                        <h3 className="text-lg font-semibold">{flight.airline}</h3>
+                        <p className="text-sm text-gray-500">{flight.flightNumber}</p>
+                      </div>
+                      <div className="text-right">
+                        <h4 className="text-lg font-semibold text-red-500">₹{flight.price}</h4>
+                        <p className="text-xs text-gray-500">Seats Available: {flight.availableSeats}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-2">
+                      <p className="text-sm font-semibold">{flight.from} - {flight.to}</p>
+                      <p className="text-xs mt-1">{flight.departureTime} - {flight.arrivalTime}</p>
+                      <p className="text-xs text-gray-500 mt-1">{flight.classType}</p>
+                    </div>
+
+                    <div className="mt-0 flex justify-end">
+                      <button onClick={() => handleBookNow(flight)} className="bg-orange-500 text-white px-4 py-1 rounded-lg shadow-md">
+                        BOOK NOW
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+        )}
+      </div>
 
-          {/* Flight Details Section */}
-          <div className="w-3/4 pl-6 flex flex-col justify-between">
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2 items-center">
-                <h3 className="text-lg font-semibold">{flight.airline}</h3>
-                <p className="text-sm text-gray-500">{flight.flightNumber}</p>
+      {/* Modal */}
+      {showModal && selectedFlight && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg relative">
+            <h2 className="text-lg font-semibold mb-4">Booking Details</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">From</label>
+                <input
+                  type="text"
+                  value={selectedFlight.from}
+                  readOnly
+                  className="bg-gray-100 p-2 rounded-lg w-full"
+                />
               </div>
-              <div className="text-right">
-                <h4 className="text-lg font-semibold text-red-500">₹{flight.price}</h4>
-                <p className="text-xs text-gray-500">Seats Available: {flight.availableSeats}</p>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">To</label>
+                <input
+                  type="text"
+                  value={selectedFlight.to}
+                  readOnly
+                  className="bg-gray-100 p-2 rounded-lg w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">Airline</label>
+                <input
+                  type="text"
+                  value={selectedFlight.airline}
+                  readOnly
+                  className="bg-gray-100 p-2 rounded-lg w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">Flight Name</label>
+                <input
+                  type="text"
+                  value={selectedFlight.flightNumber}
+                  readOnly
+                  className="bg-gray-100 p-2 rounded-lg w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">Time</label>
+                <input
+                  type="text"
+                  value={`${selectedFlight.departureTime} - ${selectedFlight.arrivalTime}`}
+                  readOnly
+                  className="bg-gray-100 p-2 rounded-lg w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1"> Date</label>
+                <input
+                  type="date"
+                  value={bookingDate}
+                  onChange={(e) => setBookingDate(e.target.value)}
+                  className="bg-blue-100 p-2 rounded-lg w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">Number of People</label>
+                <input
+                  type="number"
+                  value={bookingTravellers}
+                  onChange={(e) => setBookingTravellers(e.target.value)}
+                  className="bg-blue-100 p-2 rounded-lg w-full"
+                />
               </div>
             </div>
 
-            <div className="mt-2">
-              <p className="text-sm font-semibold">{flight.from} - {flight.to}</p>
-              <p className="text-xs mt-1">{flight.departureTime} - {flight.arrivalTime}</p>
-              <p className="text-xs text-gray-500 mt-1">{flight.classType}</p>
-            </div>
-
-            <div className="mt-0 flex justify-end">
-              <button className="bg-orange-500 text-white px-4 py-1 rounded-lg shadow-md">
-                BOOK NOW
+            <div className="mt-4 flex justify-between">
+              <button onClick={handleBooking} className="bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold">
+                Confirm Booking
               </button>
+              <button onClick={handleModalClose} className="text-blue-500 font-semibold">Cancel</button>
             </div>
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-)}
-
-      </div>
+      )}
     </div>
   );
 };

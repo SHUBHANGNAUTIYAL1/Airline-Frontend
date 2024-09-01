@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const FlightSearch = () => {
+  const user = JSON.parse(localStorage.getItem('user'))._id;
+  
+
+
   const [tripType, setTripType] = useState("one-way");
   const [from, setFrom] = useState("Delhi");
   const [to, setTo] = useState("Mumbai");
@@ -13,6 +17,7 @@ const FlightSearch = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState(null);
   const [bookingDate, setBookingDate] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [bookingTravellers, setBookingTravellers] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -54,8 +59,16 @@ const FlightSearch = () => {
     setBookingTravellers(1);
   };
 
-  const handleBooking = () => {
-    console.log("Booking Details:", {
+  const handleBooking = async () => {
+    let price1 = selectedFlight.price;
+  
+    if (selectedCategory !== 'none') {
+      price1 = selectedFlight.price - selectedFlight.price * 0.05;
+    }
+  
+    const bookingDetails = {
+      flightId: selectedFlight.user,
+      user:user,
       from: selectedFlight.from,
       to: selectedFlight.to,
       airline: selectedFlight.airline,
@@ -63,8 +76,22 @@ const FlightSearch = () => {
       time: `${selectedFlight.departureTime} - ${selectedFlight.arrivalTime}`,
       bookingDate,
       bookingTravellers,
-    });
-    handleModalClose();
+      price: price1,
+      category: selectedCategory, // Added category to the booking details
+    };
+  
+    try {
+      // Send a POST request to create the booking
+      const response = await axios.post('http://localhost:8100/api/booking/create', bookingDetails);
+  
+      console.log('Booking successful:', response.data);
+  
+      // Close the modal after a successful booking
+      handleModalClose();
+    } catch (error) {
+      console.error('Error creating booking:', error);
+      // Handle the error accordingly, e.g., show an error message to the user
+    }
   };
 
   return (
@@ -79,19 +106,7 @@ const FlightSearch = () => {
             >
               One Way
             </button>
-            <button
-              onClick={() => setTripType("round-trip")}
-              className={`font-semibold ${tripType === "round-trip" ? "text-blue-500" : "text-gray-500"}`}
-            >
-              Round Trip
-            </button>
-            <button
-              onClick={() => setTripType("multicity")}
-              className={`font-semibold ${tripType === "multicity" ? "text-blue-500" : "text-gray-500"}`}
-            >
-              Multicity
-            </button>
-          </div>
+                     </div>
           <div>
             <span className="text-gray-500 font-semibold">Search Lowest Price</span>
           </div>
@@ -177,7 +192,7 @@ const FlightSearch = () => {
             >
               SEARCH
             </button>
-            <button className="text-blue-500 font-semibold">Web Check-In</button>
+            
           </div>
         </div>
 
@@ -302,6 +317,21 @@ const FlightSearch = () => {
                   className="bg-blue-100 p-2 rounded-lg w-full"
                 />
               </div>
+              <div>
+              <label className="block text-gray-500 font-semibold mb-1">Select Category</label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="bg-blue-100 p-2 rounded-lg w-full"
+              >
+                <option value="none">None</option>
+                <option value="nurse">Nurse</option>
+                <option value="army">Army</option>
+                <option value="seniorcitizen">Senior Citizen</option>
+                <option value="student">Student</option>
+              </select>
+            </div>
+          
             </div>
 
             <div className="mt-4 flex justify-between">

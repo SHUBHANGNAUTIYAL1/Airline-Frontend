@@ -12,8 +12,9 @@ function About() {
         <Sidebar/>
         <div className="flex w-full gap-4 flex-col h-screen overflow-y-scroll">
         <HeroSection/>
-        <Rating/>
+
         <Banner/>
+        <Rating/>
         
         <Testimonials/>
         

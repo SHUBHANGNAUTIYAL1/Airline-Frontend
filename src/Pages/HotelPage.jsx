@@ -3,7 +3,8 @@ import HotelCard from '../Components/HotelCard';
 import axios from 'axios';
 import Sidebar from '../Components/SideBar';
 
-const key = 'd3a6847bc8mshebafffeab74896ap1769c0jsn42433ff60eb3';
+//const key = 'd3a6847bc8mshebafffeab74896ap1769c0jsn42433ff60eb3';
+const key='a8e25abea7msh8465279dfb74285p1645c5jsn70922a7ec0cf'
 
 const Hotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -21,21 +22,21 @@ const Hotels = () => {
             const { latitude, longitude } = position.coords;
             setRequest((prevRequest) => ({
               ...prevRequest,
-              location: `${latitude},${longitude}`,
+              location: `Auckland`,
             }));
           },
           (error) => {
             console.error('Error fetching current location:', error);
             setRequest((prevRequest) => ({
               ...prevRequest,
-              location: 'mumbai', // Fallback to default location if geolocation fails
+              location: 'Auckland', // Fallback to default location if geolocation fails
             }));
           }
         );
       } else {
         setRequest((prevRequest) => ({
           ...prevRequest,
-          location: 'mumbai', // Fallback if geolocation is not supported
+          location: 'Auckland', // Fallback if geolocation is not supported
         }));
       }
     };

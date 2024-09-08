@@ -51,7 +51,7 @@ const FlightListing = () => {
                 <p className="text-sm text-gray-500">{flight.flightNumber}</p>
               </div>
               <div className="text-right">
-                <h4 className="text-xl font-semibold text-red-500">₹{flight.price}</h4>
+                <h4 className="text-xl font-semibold text-red-500">${flight.price}</h4>
                 <p className="text-xs text-gray-500">Seats Available: {flight.availableSeats}</p>
               </div>
             </div>

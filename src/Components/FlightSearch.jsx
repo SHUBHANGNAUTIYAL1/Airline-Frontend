@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
+import FlightCard from "./FlightCard";
+import BookingModal from "./BookingModal";
 
 const FlightSearch = () => {
-  const user = JSON.parse(localStorage.getItem('user'))._id;
-  
-
+  const user = JSON.parse(localStorage.getItem("user"))._id;
 
   const [tripType, setTripType] = useState("one-way");
   const [from, setFrom] = useState("Delhi");
@@ -16,9 +16,6 @@ const FlightSearch = () => {
   const [flights, setFlights] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState(null);
-  const [bookingDate, setBookingDate] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [bookingTravellers, setBookingTravellers] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSearch = async () => {
@@ -55,49 +52,11 @@ const FlightSearch = () => {
   const handleModalClose = () => {
     setShowModal(false);
     setSelectedFlight(null);
-    setBookingDate("");
-    setBookingTravellers(1);
-  };
-
-  const handleBooking = async () => {
-    let price1 = selectedFlight.price;
-  
-    if (selectedCategory !== 'none') {
-      price1 = selectedFlight.price - selectedFlight.price * 0.05;
-    }
-  
-    const bookingDetails = {
-      flightId: selectedFlight.user,
-      user:user,
-      from: selectedFlight.from,
-      to: selectedFlight.to,
-      airline: selectedFlight.airline,
-      flightName: selectedFlight.flightNumber,
-      time: `${selectedFlight.departureTime} - ${selectedFlight.arrivalTime}`,
-      bookingDate,
-      bookingTravellers,
-      price: price1,
-      category: selectedCategory, // Added category to the booking details
-    };
-  
-    try {
-      // Send a POST request to create the booking
-      const response = await axios.post('http://localhost:8100/api/booking/create', bookingDetails);
-  
-      console.log('Booking successful:', response.data);
-  
-      // Close the modal after a successful booking
-      handleModalClose();
-    } catch (error) {
-      console.error('Error creating booking:', error);
-      // Handle the error accordingly, e.g., show an error message to the user
-    }
   };
 
   return (
     <div className="w-full">
       <div className="w-full mx-auto bg-white p-6 rounded-lg shadow-md">
-        {/* Trip Type Selection */}
         <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-6">
             <button
@@ -106,9 +65,6 @@ const FlightSearch = () => {
             >
               One Way
             </button>
-                     </div>
-          <div>
-            <span className="text-gray-500 font-semibold">Search Lowest Price</span>
           </div>
         </div>
 
@@ -186,162 +142,28 @@ const FlightSearch = () => {
           </div>
 
           <div className="flex justify-between items-center">
-            <button
-              onClick={handleSearch}
-              className="bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold"
-            >
+            <button onClick={handleSearch} className="bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold">
               SEARCH
             </button>
-            
           </div>
-        </div>
-
-        {/* Extra Options */}
-        <div className="flex justify-center space-x-6 mt-4">
-          <button className="text-blue-500 font-semibold">Defence Forces</button>
-          <button className="text-blue-500 font-semibold">Students</button>
-          <button className="text-blue-500 font-semibold">Senior Citizens</button>
-          <button className="text-blue-500 font-semibold">Doctors Nurses</button>
         </div>
 
         {/* Displaying Flights */}
-        {flights.length > 0 && (
-          <div className="mt-4">
-            <h2 className="text-gray-500 font-semibold mb-4">Available Flights</h2>
-            <div className="space-y-4">
-              {flights.map((flight, index) => (
-                <div key={index} className="bg-white w-full rounded-lg shadow-md p-4 flex overflow-hidden">
-                  {/* Image Section */}
-                  <div className="w-1/4 flex items-center">
-                    <img src={flight.image} alt={flight.airline} className="h-[120px] w-[180px] rounded-lg object-cover" />
-                  </div>
-
-                  {/* Flight Details Section */}
-                  <div className="w-3/4 pl-6 flex flex-col justify-between">
-                    <div className="flex justify-between items-center">
-                      <div className="flex gap-2 items-center">
-                        <h3 className="text-lg font-semibold">{flight.airline}</h3>
-                        <p className="text-sm text-gray-500">{flight.flightNumber}</p>
-                      </div>
-                      <div className="text-right">
-                        <h4 className="text-lg font-semibold text-red-500">${flight.price}</h4>
-                        <p className="text-xs text-gray-500">Seats Available: {flight.availableSeats}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-2">
-                      <p className="text-sm font-semibold">{flight.from} - {flight.to}</p>
-                      <p className="text-xs mt-1">{flight.departureTime} - {flight.arrivalTime}</p>
-                      <p className="text-xs text-gray-500 mt-1">{flight.classType}</p>
-                    </div>
-
-                    <div className="mt-0 flex justify-end">
-                      <button onClick={() => handleBookNow(flight)} className="bg-orange-500 text-white px-4 py-1 rounded-lg shadow-md">
-                        BOOK NOW
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {flights.length > 0 ? (
+          flights.map((flight, index) => (
+            <FlightCard key={index} flight={flight} handleBookNow={handleBookNow} />
+          ))
+        ) : (
+          <p className="text-red-500 mt-4">{errorMessage}</p>
         )}
       </div>
 
-      {/* Modal */}
       {showModal && selectedFlight && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg relative">
-            <h2 className="text-lg font-semibold mb-4">Booking Details</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-500 font-semibold mb-1">From</label>
-                <input
-                  type="text"
-                  value={selectedFlight.from}
-                  readOnly
-                  className="bg-gray-100 p-2 rounded-lg w-full"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-500 font-semibold mb-1">To</label>
-                <input
-                  type="text"
-                  value={selectedFlight.to}
-                  readOnly
-                  className="bg-gray-100 p-2 rounded-lg w-full"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-500 font-semibold mb-1">Airline</label>
-                <input
-                  type="text"
-                  value={selectedFlight.airline}
-                  readOnly
-                  className="bg-gray-100 p-2 rounded-lg w-full"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-500 font-semibold mb-1">Flight Name</label>
-                <input
-                  type="text"
-                  value={selectedFlight.flightNumber}
-                  readOnly
-                  className="bg-gray-100 p-2 rounded-lg w-full"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-500 font-semibold mb-1">Time</label>
-                <input
-                  type="text"
-                  value={`${selectedFlight.departureTime} - ${selectedFlight.arrivalTime}`}
-                  readOnly
-                  className="bg-gray-100 p-2 rounded-lg w-full"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-500 font-semibold mb-1"> Date</label>
-                <input
-                  type="date"
-                  value={bookingDate}
-                  onChange={(e) => setBookingDate(e.target.value)}
-                  className="bg-blue-100 p-2 rounded-lg w-full"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-500 font-semibold mb-1">Number of People</label>
-                <input
-                  type="number"
-                  value={bookingTravellers}
-                  onChange={(e) => setBookingTravellers(e.target.value)}
-                  className="bg-blue-100 p-2 rounded-lg w-full"
-                />
-              </div>
-              <div>
-              <label className="block text-gray-500 font-semibold mb-1">Select Category</label>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="bg-blue-100 p-2 rounded-lg w-full"
-              >
-                <option value="none">None</option>
-                <option value="nurse">Nurse</option>
-                <option value="army">Army</option>
-                <option value="seniorcitizen">Senior Citizen</option>
-                <option value="student">Student</option>
-              </select>
-            </div>
-          
-            </div>
-
-            <div className="mt-4 flex justify-between">
-              <button onClick={handleBooking} className="bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold">
-                Confirm Booking
-              </button>
-              <button onClick={handleModalClose} className="text-blue-500 font-semibold">Cancel</button>
-            </div>
-          </div>
-        </div>
+        <BookingModal
+          flight={selectedFlight}
+          user={user}
+          handleModalClose={handleModalClose}
+        />
       )}
     </div>
   );

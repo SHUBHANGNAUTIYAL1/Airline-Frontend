@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
+import { FaInfoCircle } from 'react-icons/fa';
 
 // Replace with your Stripe Publishable Key
 const stripePromise = loadStripe('pk_test_51Pw6xrIsxzKgfHeHY5fiyzClawUAl8OJIO3B9buBoyGh78UJnYxPlAekLK5ry88axb4UXvrC2tD0G7lH06GZyCNn00DIk3M2VJ');
@@ -37,7 +38,7 @@ const FlightListing = () => {
   return (
     <div className="p-6 bg-gray-100 flex flex-col w-full rounded-xl items-center space-y-4">
       {flights.map((flight, index) => (
-        <div key={index} className="bg-white w-full rounded-lg shadow-md px-10 py-4 flex overflow-hidden">
+        <div key={index} className="bg-white relative w-full rounded-lg shadow-md px-10 py-4 flex overflow-hidden">
           {/* Image Section */}
           <div className="w-1/3 flex items-center">
             <img src={flight.image} alt={flight.airline} className="h-[200px] w-[300px] rounded-xl object-cover" />
@@ -50,16 +51,41 @@ const FlightListing = () => {
                 <h3 className="text-xl font-semibold">{flight.airline}</h3>
                 <p className="text-sm text-gray-500">{flight.flightNumber}</p>
               </div>
+
               <div className="text-right">
+                {/* Info Icon above the price */}
+                <div className="relative group inline-block">
+                  <FaInfoCircle className="text-blue-500 text-lg cursor-pointer mb-1" /> {/* Icon moved here */}
+
+                  {/* Tooltip */}
+                  <div className="absolute top-0 right-0 hidden group-hover:block bg-white text-sm text-gray-700 border border-gray-300 rounded-lg shadow-lg p-4 w-72 z-10">
+                    <h4 className="font-semibold text-center mb-2">Baggage Information</h4>
+                    <ul className="list-disc text-left ml-4">
+                      <li>1 Checked Bag: 15kg allowed</li>
+                      <li>1 Cabin Bag: 7kg allowed</li>
+                      <li>Extra Baggage Charges:</li>
+                      <ul className="ml-4">
+                        <li>$20 per kg for checked baggage exceeding 15kg.</li>
+                        <li>Cabin bag must not exceed 7kg</li>
+                      </ul>
+                    </ul>
+                    <p className="mt-2 text-xs text-gray-500">
+                      Note: Extra baggage charges will be paid at the flight counter while getting the boarding pass.
+                    </p>
+                  </div>
+                </div>
+
                 <h4 className="text-xl font-semibold text-red-500">${flight.price}</h4>
                 <p className="text-xs text-gray-500">Seats Available: {flight.availableSeats}</p>
               </div>
             </div>
 
-            <div className="mt-4">
-              <p className="text-sm font-semibold">{flight.from} - {flight.to}</p>
-              <p className="text-sm mt-2">{flight.departureTime} - {flight.arrivalTime}</p>
-              <p className="text-xs text-gray-500 mt-1">{flight.classType}</p>
+            <div className="mt-4 flex justify-between items-center">
+              <div>
+                <p className="text-sm font-semibold">{flight.from} - {flight.to}</p>
+                <p className="text-sm mt-2">{flight.departureTime} - {flight.arrivalTime}</p>
+                <p className="text-xs text-gray-500 mt-1">{flight.classType}</p>
+              </div>
             </div>
 
             <div className="mt-6 flex justify-end">

@@ -9,6 +9,7 @@ const stripePromise = loadStripe('pk_test_51Pw6xrIsxzKgfHeHY5fiyzClawUAl8OJIO3B9
 const BookingModal = ({ flight, user, handleModalClose }) => {
   const [bookingDate, setBookingDate] = useState("");
   const [bookingTravellers, setBookingTravellers] = useState(1);
+  const [travellerDetails, setTravellerDetails] = useState([{ name: '', age: '', gender: '' }]);
   const [selectedCategory, setSelectedCategory] = useState("none");
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState("");
@@ -19,29 +20,26 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
     const stripe = await stripePromise;
 
     try {
-      // Request a Checkout Session from the backend
       const { data } = await axios.post('http://localhost:8100/api/payment/create', {
         flightId: flight.user,
-        price:flight.price,
-        user:user,
+        price: flight.price,
+        user: user,
         from: flight.from,
         to: flight.to,
         airline: flight.airline,
-        flightName:flight.flightNumber,
+        flightName: flight.flightNumber,
         time: `${flight.departureTime} - ${flight.arrivalTime}`,
         bookingDate,
         bookingTravellers,
-        category:selectedCategory,
+        category: selectedCategory,
       });
 
-      // Check if sessionId is returned
       const sessionId = data.sessionId;
 
       if (!sessionId) {
         throw new Error("No sessionId returned from backend");
       }
 
-      // Redirect to Stripe Checkout
       const { error } = await stripe.redirectToCheckout({ sessionId });
 
       if (error) {
@@ -61,33 +59,14 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
     setSuccess("");
 
     let price = flight.price;
-    if (selectedCategory !== "none") {
+    if (selectedCategory !== "other") {
       price = flight.price * 0.95; // Apply 5% discount
+    } else {
+      price = flight.price;
     }
 
     try {
-      // Start the payment process first
-      
-
-      // After successful payment, send booking data to the backend
-      const response = await axios.post("http://localhost:8100/api/booking/create", {
-        flightId: flight.user,
-        user:user,
-        from: flight.from,
-        to: flight.to,
-        airline: flight.airline,
-        flightName:flight.flightNumber,
-        time: `${flight.departureTime} - ${flight.arrivalTime}`,
-        bookingDate,
-        bookingTravellers,
-        price,
-        category:selectedCategory,
-     
-      });
-      console.log(response)
-
       await handleCheckout(price);
-
       setSuccess("Booking Successful!");
       Swal.fire({
         title: 'Thank You!',
@@ -104,8 +83,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
 
       setTimeout(() => {
         handleModalClose();
-      }, 1500); // Close modal after 1.5 seconds
-
+      }, 1500);
     } catch (error) {
       setError("An error occurred while booking. Please try again.");
       console.error("Error booking flight:", error);
@@ -114,12 +92,34 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
     }
   };
 
+  // Handle change in number of travellers
+  const handleTravellersChange = (value) => {
+    const numTravellers = parseInt(value);
+    setBookingTravellers(numTravellers);
+
+    // Adjust travellerDetails array based on number of travellers
+    const newTravellerDetails = [...travellerDetails];
+    while (newTravellerDetails.length < numTravellers) {
+      newTravellerDetails.push({ name: '', age: '', gender: '' });
+    }
+    while (newTravellerDetails.length > numTravellers) {
+      newTravellerDetails.pop();
+    }
+    setTravellerDetails(newTravellerDetails);
+  };
+
+  // Handle input change for traveller details
+  const handleTravellerDetailChange = (index, field, value) => {
+    const updatedDetails = [...travellerDetails];
+    updatedDetails[index][field] = value;
+    setTravellerDetails(updatedDetails);
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg relative">
+    <div className="fixed inset-0  flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white h-[80%] overflow-y-scroll w-full max-w-lg p-6 rounded-lg shadow-lg relative">
         <h2 className="text-lg font-semibold mb-4">Booking Details</h2>
         <div className="space-y-4">
-          {/* Form Fields */}
           <div>
             <label className="block text-gray-500 font-semibold mb-1">From</label>
             <input
@@ -178,11 +178,52 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
             <label className="block text-gray-500 font-semibold mb-1">Number of People</label>
             <input
               type="number"
+              min="1"
               value={bookingTravellers}
-              onChange={(e) => setBookingTravellers(e.target.value)}
+              onChange={(e) => handleTravellersChange(e.target.value)}
               className="bg-blue-100 p-2 rounded-lg w-full"
             />
           </div>
+
+          {/* Dynamically Render Traveller Details */}
+          {travellerDetails.map((traveller, index) => (
+            <div key={index} className="space-y-2 border-b pb-2 mb-2">
+              <h3 className="text-gray-700 font-semibold">Traveller {index + 1}</h3>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">Name</label>
+                <input
+                  type="text"
+                  value={traveller.name}
+                  onChange={(e) => handleTravellerDetailChange(index, 'name', e.target.value)}
+                  className="bg-blue-100 p-2 rounded-lg w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">Age</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={traveller.age}
+                  onChange={(e) => handleTravellerDetailChange(index, 'age', e.target.value)}
+                  className="bg-blue-100 p-2 rounded-lg w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-500 font-semibold mb-1">Gender</label>
+                <select
+                  value={traveller.gender}
+                  onChange={(e) => handleTravellerDetailChange(index, 'gender', e.target.value)}
+                  className="bg-blue-100 p-2 rounded-lg w-full"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+          ))}
+
           <div>
             <label className="block text-gray-500 font-semibold mb-1">Select Category</label>
             <select
@@ -190,32 +231,33 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="bg-blue-100 p-2 rounded-lg w-full"
             >
-              <option value="none">None</option>
+              <option value="other">Others</option>
               <option value="nurse">Nurse</option>
               <option value="army">Army</option>
               <option value="seniorcitizen">Senior Citizen</option>
               <option value="student">Student</option>
             </select>
           </div>
-          {error && <p className="text-red-500 mt-2">{error}</p>}
-          {success && <p className="text-green-500 mt-2">{success}</p>}
-          {loading && <p className="text-gray-500 mt-2">Processing payment...</p>}
-          <div className="mt-4 flex justify-between">
-            <button
-              onClick={handleBooking}
-              className="bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold"
-              disabled={isProcessing || loading}
-            >
-              {isProcessing ? "Processing..." : "Confirm Booking"}
-            </button>
-            <button
-              onClick={handleModalClose}
-              className="text-blue-500 font-semibold"
-            >
-              Cancel
-            </button>
+
+          <div>
+            {error && <div className="text-red-500">{error}</div>}
+            {success && <div className="text-green-500">{success}</div>}
           </div>
+
+          <button
+            onClick={handleBooking}
+            className="bg-blue-500 text-white p-2 rounded-lg w-full hover:bg-blue-600 transition-colors"
+            disabled={isProcessing}
+          >
+            {isProcessing ? "Processing..." : "Book Now"}
+          </button>
         </div>
+        <button
+          onClick={handleModalClose}
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+        >
+          X
+        </button>
       </div>
     </div>
   );

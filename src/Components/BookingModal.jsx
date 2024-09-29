@@ -157,7 +157,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
             <div key={index} className="space-y-2 border-b pb-2 mb-2">
               <h3 className="text-gray-700 font-semibold">Traveller {index + 1}</h3>
               <div><label className="block text-gray-500 font-semibold mb-1">Name</label><input type="text" maxLength={20} value={traveller.name} onChange={(e) => handleTravellerDetailChange(index, 'name', e.target.value)} className="bg-blue-100 p-2 rounded-lg w-full" /></div>
-              <div><label className="block text-gray-500 font-semibold mb-1">Age</label><input type="number" min="1" max="100" value={traveller.age} onChange={(e) => handleTravellerDetailChange(index, 'age', e.target.value)} className="bg-blue-100 p-2 rounded-lg w-full" /></div>
+              <div><label className="block text-gray-500 font-semibold mb-1">Age</label><input type="number" maxLength={3} min="1" max="100" value={traveller.age} onChange={(e) => handleTravellerDetailChange(index, 'age', e.target.value)} className="bg-blue-100 p-2 rounded-lg w-full" /></div>
               <div>
                 <label className="block text-gray-500 font-semibold mb-1">Gender</label>
                 <select value={traveller.gender} onChange={(e) => handleTravellerDetailChange(index, 'gender', e.target.value)} className="bg-blue-100 p-2 rounded-lg w-full">

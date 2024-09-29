@@ -10,6 +10,8 @@ import BookingsPage from './Pages/BookingPage'
 import AirlineBooking from './Pages/AirlineBooking'
 import About from './Pages/About'
 import SurveyForm from './Pages/SurveyForm'
+import About2 from './Pages/About2'
+import Profile from './Pages/Profile'
 
 
 
@@ -28,7 +30,8 @@ function App() {
         <Route path="/customers" element={<AirlineBooking/>} />
         <Route path="/about" element={<About/>} />
         <Route path="/survey" element={<SurveyForm/>} />
-     
+        <Route path="/about2" element={<About2/>}/>
+        <Route path="/profile" element={<Profile/>}/>
 
       </Routes>
     </BrowserRouter>

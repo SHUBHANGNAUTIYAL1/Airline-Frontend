@@ -14,7 +14,7 @@ const SideNavbar = () => {
           <span className="text-3xl text-teal-600 ">Fly<span className='text-yellow-500'>Mate</span></span>
         </div>
         <ul className="space-y-4 mt-20">
-          <li onClick={()=>navigate('/')} className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md">
+          <li onClick={()=>navigate('/about2')} className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md">
             <FaHome className="text-gray-700 text-xl" />
             <span className="text-gray-700">Home</span>
           </li>
@@ -26,7 +26,7 @@ const SideNavbar = () => {
             <FaBookmark className="text-gray-700 text-xl" />
             <span className="text-gray-700">Customers Bookings</span>
           </li>
-          <li className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md">
+          <li onClick={()=>navigate('/profile')} className="flex items-center space-x-3 hover:bg-gray-200 p-2 rounded-md">
             <FaUser className="text-gray-700 text-xl" />
             <span className="text-gray-700">Profile</span>
           </li>

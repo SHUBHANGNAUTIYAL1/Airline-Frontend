@@ -9,7 +9,7 @@ const FlightSearch = () => {
   const [tripType, setTripType] = useState("one-way");
   const [from, setFrom] = useState("Delhi");
   const [to, setTo] = useState("Mumbai");
-  const [departureDate, setDepartureDate] = useState("2024-08-09");
+  const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [travellers, setTravellers] = useState(1);
   const [travelClass, setTravelClass] = useState("Economy");
@@ -17,6 +17,9 @@ const FlightSearch = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedFlight, setSelectedFlight] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+
+  // Get today's date in YYYY-MM-DD format
+  const todayDate = new Date().toISOString().split("T")[0];
 
   const handleSearch = async () => {
     try {
@@ -90,15 +93,6 @@ const FlightSearch = () => {
             />
           </div>
 
-          <div>
-            <label className="block text-gray-500 font-semibold mb-1">DEPARTURE DATE</label>
-            <input
-              type="date"
-              value={departureDate}
-              onChange={(e) => setDepartureDate(e.target.value)}
-              className="bg-blue-100 p-2 rounded-lg w-full"
-            />
-          </div>
 
           {tripType === "round-trip" && (
             <div>
@@ -108,6 +102,7 @@ const FlightSearch = () => {
                 value={returnDate}
                 onChange={(e) => setReturnDate(e.target.value)}
                 className="bg-blue-100 p-2 rounded-lg w-full"
+                min={departureDate || todayDate} // Ensure return date is not before departure date
               />
             </div>
           )}

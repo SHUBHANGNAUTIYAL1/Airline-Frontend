@@ -38,7 +38,7 @@ const BookingsPage = () => {
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
 
-      <div className="flex w-full flex-col p-8">
+      <div className="flex w-full flex-col p-8 h-screen overflow-y-scroll">
         <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">My Bookings</h1>
         
         {bookings.length === 0 ? (

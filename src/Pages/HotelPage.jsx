@@ -3,8 +3,7 @@ import HotelCard from '../Components/HotelCard';
 import axios from 'axios';
 import Sidebar from '../Components/SideBar';
 
-//const key = 'd3a6847bc8mshebafffeab74896ap1769c0jsn42433ff60eb3';
-const key='a8e25abea7msh8465279dfb74285p1645c5jsn70922a7ec0cf'
+const key = 'a8e25abea7msh8465279dfb74285p1645c5jsn70922a7ec0cf';
 
 const Hotels = () => {
   const [hotels, setHotels] = useState([]);
@@ -12,7 +11,7 @@ const Hotels = () => {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [request, setRequest] = useState({ checkin: '', checkout: '', adults: '', location: '' });
+  const [request, setRequest] = useState({ checkin: '', checkout: '', location: '' });
 
   useEffect(() => {
     const getCurrentLocation = () => {
@@ -102,7 +101,7 @@ const Hotels = () => {
         checkin_date: request.checkin || todaysDate(),
         checkout_date: request.checkout || tomDate(),
         region_id: id,
-        adults_number: request.adults || '1',
+        adults_number: '1', // Defaulting to 1 adult
         locale: 'en_IN',
       },
       headers: {
@@ -151,13 +150,14 @@ const Hotels = () => {
 
         const response = await axios.request(temp_options);
         if (response.data && response.data.summary) {
-          const hotelImages = response.data.propertyGallery.images.slice(0, 4).map(img => img.image.url);
-
+          const hotelImages = response.data.propertyGallery.images.slice(0, 4).map((img) => img.image.url);
+          
           const obj = {
             id: response.data.summary.id,
             name: response.data.summary.name,
             address: `${response.data.summary.location.address.firstAddressLine} ${response.data.summary.location.address.secondAddressLine || ''}`,
-            price: hotel.price,
+            price: new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD' }).format(Math.random() * (500 - 100) + 100),
+
             rating: response.data.summary.overview.propertyRating.rating,
             thumbnail: hotel.image,
             images: hotelImages,
@@ -204,10 +204,10 @@ const Hotels = () => {
   const fetchMoreHotels = () => {
     getHotelDetails();
   };
+
   return (
-    <div className="flex w-full  justify-between h-screen">
+    <div className="flex w-full justify-between h-screen">
       <Sidebar />
-  
       <div className="flex flex-col items-center w-[60%] h-full p-4 overflow-y-auto bg-gray-50">
         {loading && (
           <div className="flex justify-center my-6">
@@ -239,7 +239,7 @@ const Hotels = () => {
           </div>
         )}
       </div>
-  
+
       <div className="w-96 p-6 bg-white shadow-lg rounded-lg">
         <div className="hotels-booking-area p-4 bg-gray-100 rounded-lg shadow-md">
           <form onSubmit={submit}>
@@ -269,6 +269,7 @@ const Hotels = () => {
                 value={request.checkin}
                 onChange={onchange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                min={todaysDate()}
                 required
               />
             </div>
@@ -283,35 +284,19 @@ const Hotels = () => {
                 value={request.checkout}
                 onChange={onchange}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                required
-              />
-            </div>
-            <div className="form-group mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="adults">
-                Adults
-              </label>
-              <input
-                type="number"
-                name="adults"
-                id="adults"
-                value={request.adults}
-                onChange={onchange}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Number of adults"
+                min={tomDate()}
                 required
               />
             </div>
             {showAlert && (
-              <div className="text-red-500 text-sm mb-4">
-                Check-in and Check-out dates cannot be in the past.
-              </div>
+              <p className="text-red-500 text-sm mb-4">Check-in and Check-out dates should be valid.</p>
             )}
-            <div className="flex items-center justify-between">
+            <div className="form-group">
               <button
                 type="submit"
-                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:shadow-outline"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               >
-                Search Hotels
+                Search
               </button>
             </div>
           </form>
@@ -319,5 +304,6 @@ const Hotels = () => {
       </div>
     </div>
   );
-}
-export default Hotels  
+};
+
+export default Hotels;

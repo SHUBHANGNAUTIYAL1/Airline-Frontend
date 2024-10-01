@@ -14,7 +14,7 @@ const AirlineBooking = () => {
       const airlineId = JSON.parse(localStorage.getItem('user'))._id;
       
       try {
-        const response = await axios.get(`http://localhost:8100/api/booking/airline/${airlineId}`);
+        const response = await axios.get(`https://airline-backend.onrender.com/api/booking/airline/${airlineId}`);
         setBookings(response.data);
       } catch (err) {
         setError('Error fetching bookings.');

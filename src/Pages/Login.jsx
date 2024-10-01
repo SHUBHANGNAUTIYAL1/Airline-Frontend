@@ -25,7 +25,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8100/api/auth/login', formData);
+      const response = await axios.post('https://airline-backend.onrender.com/api/auth/login', formData);
       localStorage.setItem('user', JSON.stringify(response.data));
       console.log(response);
       

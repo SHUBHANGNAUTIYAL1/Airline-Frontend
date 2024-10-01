@@ -11,7 +11,7 @@ const FlightsList = () => {
 
   useEffect(() => {
     // Fetch all flights created by airlines
-    axios.get(`http://localhost:8100/api/flight/get/${userId}`)
+    axios.get(`https://airline-backend.onrender.com/api/flight/get/${userId}`)
       .then(response => setFlights(response.data))
       .catch(error => console.error(error));
   }, [userId]);

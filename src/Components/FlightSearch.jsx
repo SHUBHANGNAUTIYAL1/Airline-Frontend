@@ -23,7 +23,7 @@ const FlightSearch = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await axios.get("http://localhost:8100/api/flight/");
+      const response = await axios.get("https://airline-backend.onrender.com/api/flight/");
       const allFlights = response.data;
 
       const filteredFlights = allFlights.filter((flight) => {

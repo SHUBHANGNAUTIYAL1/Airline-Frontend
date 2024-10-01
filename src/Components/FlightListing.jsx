@@ -15,7 +15,7 @@ const FlightListing = () => {
     // Fetch flights from the backend
     const fetchFlights = async () => {
       try {
-        const response = await axios.get('http://localhost:8100/api/flight/'); // Adjust the URL as needed
+        const response = await axios.get('https://airline-backend.onrender.com/api/flight/'); // Adjust the URL as needed
         setFlights(response.data);
         setLoading(false);
       } catch (error) {

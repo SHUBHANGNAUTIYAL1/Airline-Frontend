@@ -29,7 +29,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
     
 
     try {
-      const { data } = await axios.post('http://localhost:8100/api/payment/create', {
+      const { data } = await axios.post('https://airline-backend.onrender.com/api/payment/create', {
         flightId: flight.user,
         price: totalPrice,
         user: user,
@@ -84,7 +84,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
 
   const handleBookingCreate = async () => {
     try {
-      const response = await axios.post("http://localhost:8100/api/booking/create", {
+      const response = await axios.post("https://airline-backend.onrender.com/api/booking/create", {
         flightId: flight._id, // Flight ObjectId
         userId: user._id, // User ObjectId
         from: flight.from, 

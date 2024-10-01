@@ -67,7 +67,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:8100/api/auth/register', formData);
+      const response = await axios.post('https://airline-backend.onrender.com/api/auth/register', formData);
       toast.success('Successfully registered!');
       console.log(response.data);
       setTimeout(() => {

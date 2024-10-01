@@ -20,7 +20,7 @@ const BookingsPage = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:8100/api/booking/user/${user}`);
+        const response = await axios.get(`https://airline-backend.onrender.com/api/booking/user/${user}`);
         console.log(response.data)
         setBookings(response.data);
       } catch (err) {

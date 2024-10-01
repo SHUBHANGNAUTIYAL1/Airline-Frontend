@@ -59,7 +59,7 @@ const FlightForm = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:8100/api/flight/create', data);
+      const response = await axios.post('https://airline-backend.onrender.com/api/flight/create', data);
       console.log('Flight created:', response.data);
       alert("flight created Successfully")
       window.location.reload();

@@ -127,7 +127,7 @@ const Register = () => {
             min={5}
             required
             onChange={handleChange}
-            className={`w-full px-4 py-2 outline-none border-2 ${errors.password ? 'border-red-500' : 'border-white'} text-white bg-black placeholder-white`}
+            className={`w-full px-4 py-2 outline-none border-2 ${errors.password ? 'border-red-500' : 'border-white'} text-white bg-black bg-transparent placeholder-white`}
           />
           {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
 

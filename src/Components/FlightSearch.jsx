@@ -7,7 +7,7 @@ const FlightSearch = () => {
   const user = JSON.parse(localStorage.getItem("user"))._id;
 
   const [tripType, setTripType] = useState("one-way");
-  const [from, setFrom] = useState("Delhi");
+  const [from, setFrom] = useState("Bangalore");
   const [to, setTo] = useState("Mumbai");
   const [departureDate, setDepartureDate] = useState("");
   const [returnDate, setReturnDate] = useState("");

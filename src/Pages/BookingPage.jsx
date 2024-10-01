@@ -12,6 +12,7 @@ const BookingsPage = () => {
   useEffect(() => {
     const fetchBookings = async () => {
       const user = JSON.parse(localStorage.getItem('user'))._id;
+
       if (!user) {
         setError('User ID not found in local storage.');
         setLoading(false);
@@ -20,6 +21,7 @@ const BookingsPage = () => {
 
       try {
         const response = await axios.get(`http://localhost:8100/api/booking/user/${user}`);
+        console.log(response.data)
         setBookings(response.data);
       } catch (err) {
         setError('Error fetching bookings.');
@@ -59,11 +61,11 @@ const BookingsPage = () => {
                     <p><strong>Airline:</strong> {booking.airline}</p>
                     <p><strong>Time:</strong> {booking.time}</p>
                     <p><strong>Travellers:</strong> {booking.bookingTravellers}</p>
-                    <p><strong>Category:</strong> {booking.category}</p>
+                   
                   </div>
                   
                   <div className="text-right space-y-4">
-                    <p className="text-lg font-bold text-green-600"><strong>Price:</strong> ₹{booking.price.toFixed(2)}</p>
+                    <p className="text-lg font-bold text-green-600"><strong>Price:</strong> ₹{booking.totalPrice}</p>
                     <button
                       className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300"
                       onClick={() => setSelectedBooking(booking)}

@@ -62,7 +62,7 @@ const Login = () => {
             maxLength={20}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border-2 border-white outline-none text-white bg-black placeholder-white"
+            className="w-full px-4 py-2 border-2 border-white outline-none text-white bg-transparent placeholder-white"
           />
           <input
             type="password"
@@ -72,14 +72,14 @@ const Login = () => {
             onChange={handleChange}
             maxLength={20}
             required
-            className="w-full px-4 py-2 outline-none border-2 border-white text-white bg-black placeholder-white"
+            className="w-full px-4 py-2 outline-none border-2 border-white text-white bg-black bg-transparent placeholder-white"
           />
           <select
             name="role"
             value={formData.role}
             onChange={handleChange}
             required
-            className="w-full px-4 py-2 border-2 border-white outline-none text-white bg-black placeholder-white"
+            className="w-full px-4 py-2 border-2 border-white outline-none  text-white bg-black placeholder-white"
           >
             <option value="" disabled>Select Role</option>
             <option value="customer">Customer</option>

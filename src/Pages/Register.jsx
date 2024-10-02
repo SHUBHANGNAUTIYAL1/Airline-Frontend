@@ -111,7 +111,7 @@ const Register = () => {
             name="email"
             placeholder="Email"
             value={formData.email}
-            maxLength={20}
+            maxLength={40}
             required
             onChange={handleChange}
             className={`w-full px-4 py-2 border-2 ${errors.email ? 'border-red-500' : 'border-white'} outline-none text-white bg-black placeholder-white`}

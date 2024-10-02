@@ -59,7 +59,7 @@ const Login = () => {
             name="email"
             placeholder="Mail"
             value={formData.email}
-            maxLength={20}
+            maxLength={40}
             onChange={handleChange}
             required
             className="w-full px-4 py-2 border-2 border-white outline-none text-white bg-transparent placeholder-white"

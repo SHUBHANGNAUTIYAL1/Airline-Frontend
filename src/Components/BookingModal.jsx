@@ -96,7 +96,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
         bookingTravellers,
         user: user,
         travellerDetails, // Array of traveller objects
-        totalPrice: calculateTotalPrice(), // Total calculated price
+        totalPrice: totalPrice, // Total calculated price
       });
   
       

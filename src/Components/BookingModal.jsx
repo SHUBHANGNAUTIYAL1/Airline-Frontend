@@ -115,7 +115,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
       const finalPrice = basePrice * (1 - discount);
       totalPrice += finalPrice;
     });
-    return totalPrice;
+    return totalPrice.toFixed(2);
   };
 
   const handleBooking = async () => {

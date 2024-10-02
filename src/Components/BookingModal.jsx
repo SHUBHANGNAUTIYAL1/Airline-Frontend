@@ -96,7 +96,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
         bookingTravellers,
         user: user,
         travellerDetails, // Array of traveller objects
-        totalPrice: totalPrice, // Total calculated price
+        totalPrice: calculateTotalPrice(), // Total calculated price
       });
   
       
@@ -115,7 +115,7 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
       const finalPrice = basePrice * (1 - discount);
       totalPrice += finalPrice;
     });
-    return totalPrice.toFixed(2);
+    return totalPrice;
   };
 
   const handleBooking = async () => {

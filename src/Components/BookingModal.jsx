@@ -219,6 +219,11 @@ const BookingModal = ({ flight, user, handleModalClose }) => {
         <button onClick={handleModalClose} className="absolute top-0 right-0 mt-2 mr-2 text-gray-400 hover:text-red-600">
           <i className="fas fa-times"></i>
         </button>
+        <button 
+  onClick={handleModalClose} 
+  className="absolute top-0 right-0 mt-2 mr-2 text-gray-500 hover:text-red-500 focus:outline-none">
+  &#x2715; {/* This is the 'X' symbol for the cross */}
+</button>
       </div>
     </div>
   );
